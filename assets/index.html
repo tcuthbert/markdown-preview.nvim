@@ -736,19 +736,27 @@
             flex: 1;
             overflow: auto;
             cursor: grab;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+        }
+
+        #overlay-panzoom-inner {
+            min-width: 100%;
+            min-height: 100%;
+            box-sizing: border-box;
+            padding: 1rem;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 1rem;
-            scrollbar-width: thin;
-            scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+            width: max-content;
+            height: max-content;
         }
 
         #overlay-panzoom.dragging {
             cursor: grabbing
         }
 
-        #overlay-panzoom svg {
+        #overlay-panzoom-inner svg {
             display: block
         }
 
@@ -820,7 +828,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
         </div>
-        <div id="overlay-panzoom"></div>
+        <div id="overlay-panzoom"><div id="overlay-panzoom-inner"></div></div>
     </div>
 
     <!-- CDN deps: markdown-it, morphdom, highlight.js, emoji, footnote, anchor -->
@@ -852,6 +860,7 @@
         // Overlay refs
         const overlay = $('overlay');
         const overlayPanzoom = $('overlay-panzoom');
+        const overlayPanzoomInner = $('overlay-panzoom-inner');
         const ovZoomIn = $('ovZoomIn');
         const ovZoomOut = $('ovZoomOut');
         const ovZoomReset = $('ovZoomReset');
@@ -1277,10 +1286,10 @@
         // ── Expand overlay (fullscreen diagram zoom/pan) ──────────────
         function openOverlay(svgHtml) {
             ovSvgSource = svgHtml;
-            overlayPanzoom.innerHTML = svgHtml;
+            overlayPanzoomInner.innerHTML = svgHtml;
             overlay.classList.add('active');
 
-            const svg = overlayPanzoom.querySelector('svg');
+            const svg = overlayPanzoomInner.querySelector('svg');
             if (svg) {
                 const vb = svg.getAttribute('viewBox');
                 if (vb) {
@@ -1300,11 +1309,11 @@
 
         function closeOverlay() {
             overlay.classList.remove('active');
-            overlayPanzoom.innerHTML = '';
+            overlayPanzoomInner.innerHTML = '';
         }
 
         function applyOverlayZoom() {
-            const svg = overlayPanzoom.querySelector('svg');
+            const svg = overlayPanzoomInner.querySelector('svg');
             if (!svg || !ovBaseW || !ovBaseH) return;
             svg.removeAttribute('style');
             svg.removeAttribute('width');
